@@ -39,15 +39,15 @@ public class Postman extends JavaPlugin {
         File[] files = fromDir.listFiles();
         if (files == null) return;
         for (File file : files) {
-            File newFile = new File(toDir.getPath(), file.getName());
-            if (!toDir.exists() || newFile.exists()) {
-                if (file.renameTo(newFile)) {
-                    logToFile("File " + file.getName() + " moved from " + file.getPath() + " toDir " + newFile.getPath());
+            File dest = new File(toDir.getPath(), file.getName());
+            if (toDir.exists() && !dest.exists()) {
+                if (file.renameTo(dest)) {
+                    logToFile("File " + file.getName() + " moved from " + file.getPath() + " to " + dest.getPath());
                 } else {
-                    logToFile("Failed toDir move " + file.getName() + " from " + file.getPath() + " toDir " + newFile.getPath());
+                    logToFile("Failed to move " + file.getName() + " from " + file.getPath() + " to " + dest.getPath());
                 }
             } else {
-                logToFile("File " + file.getName() + " couldn't be moved toDir " + newFile.getPath() + " (no directory or file already exists)");
+                logToFile("File " + file.getName() + " couldn't be moved to " + dest.getPath() + " (no directory or file already exists)");
             }
 
         }
@@ -60,15 +60,13 @@ public class Postman extends JavaPlugin {
             File file = new File(this.getDataFolder() + "/logs/", dateStr + ".log");
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
-                file.createNewFile();
             }
 
-            FileWriter writer = new FileWriter(file, true);
-            PrintWriter printer = new PrintWriter(writer);
+            PrintWriter writer = new PrintWriter(new FileWriter(file, true));
             String timeStr = new SimpleDateFormat("HH:mm:ss").format(systemDate);
-            printer.println("[" + timeStr + "] " + message);
-            printer.flush();
-            printer.close();
+            writer.println("[" + timeStr + "] " + message);
+            writer.flush();
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
