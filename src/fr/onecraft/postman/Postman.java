@@ -61,7 +61,6 @@ public class Postman extends JavaPlugin {
 
             PrintWriter writer = new PrintWriter(new FileWriter(file, true));
             writer.println("[" + time + "] " + message);
-
             writer.flush();
             writer.close();
         } catch (IOException e) {
