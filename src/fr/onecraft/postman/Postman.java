@@ -1,6 +1,7 @@
 package fr.onecraft.postman;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Postman extends JavaPlugin {
     private final Map<String, String> directories = new HashMap<>();
@@ -19,7 +21,8 @@ public class Postman extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info(this.getName() + " has been enabled.");
-        getConfig().getKeys(false).forEach(folders -> directories.put(folders, getConfig().getString(folders)));
+        ConfigurationSection config = getConfig().getConfigurationSection("folders");
+        config.getKeys(false).forEach(dir -> directories.put(dir, config.getString(dir)));
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::checkFiles, 20, 20 * 5);
     }
 
@@ -29,9 +32,9 @@ public class Postman extends JavaPlugin {
     }
 
     private void checkFiles() {
-        for (String folder : directories.keySet()) {
-            File fromDir = new File(folder);
-            File toDir = new File(directories.get(folder));
+        for (Entry<String, String> entry : directories.entrySet()) {
+            File fromDir = new File(entry.getKey());
+            File toDir = new File(entry.getValue());
             moveDirectoryContent(fromDir, toDir);
         }
     }
@@ -49,16 +52,16 @@ public class Postman extends JavaPlugin {
 
     private void logToFile(String message) {
         try {
-            Date systemDate = Calendar.getInstance().getTime();
-            String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(systemDate);
-            File file = new File(this.getDataFolder() + "/logs/", dateStr + ".log");
+            Date now = Calendar.getInstance().getTime();
+            String today = new SimpleDateFormat("yyyy-MM-dd").format(now);
+            File file = new File(this.getDataFolder() + "/logs/", today + ".log");
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
             }
 
             PrintWriter writer = new PrintWriter(new FileWriter(file, true));
-            String timeStr = new SimpleDateFormat("HH:mm:ss").format(systemDate);
-            writer.println("[" + timeStr + "] " + message);
+            String time = new SimpleDateFormat("HH:mm:ss").format(now);
+            writer.println("[" + time + "] " + message);
             writer.flush();
             writer.close();
         } catch (IOException e) {
