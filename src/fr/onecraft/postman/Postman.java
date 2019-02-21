@@ -54,14 +54,14 @@ public class Postman extends JavaPlugin {
         try {
             Date now = Calendar.getInstance().getTime();
             String today = new SimpleDateFormat("yyyy-MM-dd").format(now);
+            String time = new SimpleDateFormat("HH:mm:ss").format(now);
+
             File file = new File(this.getDataFolder() + "/logs/", today + ".log");
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-            }
+            if (!file.exists()) file.getParentFile().mkdirs();
 
             PrintWriter writer = new PrintWriter(new FileWriter(file, true));
-            String time = new SimpleDateFormat("HH:mm:ss").format(now);
             writer.println("[" + time + "] " + message);
+
             writer.flush();
             writer.close();
         } catch (IOException e) {
