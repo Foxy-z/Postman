@@ -20,10 +20,11 @@ public class Postman extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info(this.getName() + " has been enabled.");
+        saveDefaultConfig();
         ConfigurationSection config = getConfig().getConfigurationSection("folders");
         config.getKeys(false).forEach(dir -> directories.put(dir, config.getString(dir)));
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::checkFiles, 20, 20 * 5);
+        getLogger().info(this.getName() + " has been enabled.");
     }
 
     @Override
