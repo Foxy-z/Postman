@@ -14,13 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Postman extends JavaPlugin {
-    private Map<String, String> directories = new HashMap();
+    private final Map<String, String> directories = new HashMap<>();
 
     @Override
     public void onEnable() {
         getLogger().info(this.getName() + " has been enabled.");
         getConfig().getKeys(false).forEach(folders -> directories.put(folders, getConfig().getString(folders)));
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::checkFiles, 0, 20 * 10);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::checkFiles, 20, 20 * 5);
     }
 
     @Override
@@ -29,9 +29,10 @@ public class Postman extends JavaPlugin {
     }
 
     private void checkFiles() {
-        for (String folders : directories.keySet()) {
-            File from = new File(folders);
-            moveDirectoryContent(from, new File(directories.get(from.getPath())));
+        for (String folder : directories.keySet()) {
+            File fromDir = new File(folder);
+            File toDir = new File(directories.get(folder));
+            moveDirectoryContent(fromDir, toDir);
         }
     }
 
