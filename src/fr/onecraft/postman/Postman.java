@@ -44,7 +44,7 @@ public class Postman extends JavaPlugin {
         if (files == null) return;
         for (File file : files) {
             File dest = new File(toDir.getPath(), file.getName());
-            if (toDir.exists() && !dest.exists() && file.renameTo(dest)) {
+            if (toDir.exists() && !dest.exists() && file.isFile() && file.renameTo(dest)) {
                 logToFile("File " + file.getName() + " moved from " + file.getPath() + " to " + dest.getPath());
             }
         }
